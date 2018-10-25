@@ -7,12 +7,13 @@ export default class Chart extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: d3.range(200).map(_ => [random(), random()]),
+      data1: d3.range(20).map(_ => [random(), random()]),
+      data2: d3.range(20).map(_ => [random(), random()]),
       zoomTransform: null,
     }
     this.zoom = d3
       .zoom()
-      .scaleExtent([-5, 5])
+      //   .scaleExtent([-5, 5])
       .translateExtent([[-100, -100], [props.width + 100, props.height + 100]])
       .extent([[-100, -100], [props.width + 100, props.height + 100]])
       .on('zoom', this.zoomed.bind(this))
@@ -35,20 +36,20 @@ export default class Chart extends Component {
     return (
       <svg width={width} height={height} ref="svg">
         <Scatterplot
-          data={this.state.data}
-          x={0}
-          y={0}
+          data={this.state.data1}
+          x={-10}
+          y={-10}
           width={width / 2}
-          height={height}
+          height={height / 2}
           zoomTransform={zoomTransform}
           zoomType="scale"
         />
         <Scatterplot
-          data={this.state.data}
+          data={this.state.data2}
           x={width / 2}
-          y={0}
+          y={-10}
           width={width / 2}
-          height={height}
+          height={height / 2}
           zoomTransform={zoomTransform}
           zoomType="detail"
         />
@@ -105,7 +106,7 @@ class Scatterplot extends React.Component {
           <circle
             cx={this.xScale(x)}
             cy={this.yScale(y)}
-            r={4}
+            r={8}
             fill={'none'}
             stroke={'black'}
           />
