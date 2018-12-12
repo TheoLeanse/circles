@@ -1,3 +1,8 @@
+# a catalogue built around a series of circles, each representing a distinct timeline
+# (history of the music vid, artist moving image, political economy), that it's possible
+# to zoom in and out of. I'd like to be able to host different kinds on media along the
+# timeline (video, text, audio) etc. so that when you click on a specific date or
+# thumbnail you are taken to a new page where that media is hosted.
 backend:
   name: git-gateway
   branch: master
@@ -6,18 +11,36 @@ media_folder: static/img
 public_folder: /img
 
 collections:
-  - name: 'pages'
-    label: 'Pages'
-    files:
-      - file: 'src/pages/home/index.md'
-        label: 'Home'
-        name: 'home'
-        fields:
-          - {
-              label: 'Template Key',
-              name: 'templateKey',
-              widget: 'hidden',
-              default: 'home-page',
-            }
-          - { label: 'Title', name: 'title', widget: 'string' }
-          - { label: 'Body', name: 'body', widget: 'markdown' }
+  # - name: 'timelines'
+  #   label: 'Timelines'
+  #   create: true
+  #   slug: "{{slug}}"
+  #   fields:
+  #     - {
+  #         label: 'Template Key',
+  #         name: 'templateKey',
+  #         widget: 'hidden',
+  #         default: 'timeline',
+  #       }
+  #     - { label: 'Title', name: 'title', widget: 'string' }
+  #     - { label: 'Body', name: 'body', widget: 'markdown' }
+  - name: media
+    label: Media
+    create: true
+    slug: "{{slug}}"
+    folder: src/pages/media
+    fields:
+      - {
+        label: 'Template Key',
+        name: templateKey,
+        widget: hidden,
+        default: media,
+      }
+      - { label: Title, name: title, widget: string }
+      - { label: Body, name: body, widget: markdown }
+      - { label: Timeline, name: timeline, widget: string }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: Video, name: video, widget: image, required: false }
+      - { label: Audio, name: audio, widget: image, required: false }
+
+
