@@ -1,89 +1,103 @@
 import React from 'react'
 import * as R from 'ramda'
 import * as d3 from 'd3'
+import { minusTwo, min, half, zeroIndexArrayOfLength, indexMap } from '../utils'
 
-const half = R.divide(R.__, 2)
-const arrayOfN = x => [...Array(x)].map((x, i) => i)
-const getRadii = (height, n) =>
-  [0, 1, 2]
-    .map(x => (height / n) * (n - x))
-    .map(half)
-    .map(R.subtract(R.__, 2))
+const height = 1000
+const width = 1000
+
+const circumference = (n, height) => x => (height / n) * (n - x)
+
+const radius = (x, y) =>
+  R.compose(
+    minusTwo,
+    half,
+    circumference(x, y)
+  )
+
+const radii = (height, n) => R.map(radius(n, height), zeroIndexArrayOfLength(n))
+
+const getPosition = (x, y) =>
+  R.path([x, y])({
+    0: {
+      0: 3,
+      1: 2,
+      2: 1,
+    },
+    1: {
+      0: 1,
+      1: 3,
+      2: 2,
+    },
+    2: {
+      0: 2,
+      1: 1,
+      2: 3,
+    },
+  })
+
+const unit = R.compose(
+  min,
+  R.map(R.prop('r'))
+)
+
+const data = indexMap(
+  (x, i) => ({
+    id: i,
+    x: half(width),
+    y: half(height),
+    r: x,
+    width: getPosition(0, i) * 4,
+  }),
+  radii(Math.min(width, height), 3)
+)
+
+const newData = data => id =>
+  R.map(
+    x => ({
+      ...x,
+      r: getPosition(id, x.id) * unit(data),
+      width: getPosition(id, x.id) * 4,
+    }),
+    data
+  )
+
+const updater = data =>
+  d3
+    .select('svg')
+    .selectAll('circle')
+    .data(data)
+    .transition(d3.transition().duration(750))
+    .attr('r', d => d.r)
+    .attr('stroke-width', ({ width }) => width)
+
+const handleClick = data =>
+  R.compose(
+    updater,
+    newData(data),
+    R.prop('id')
+  )
+
+const setUpCircles = data =>
+  d3
+    .select('svg')
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('cx', d => d.x)
+    .attr('cy', d => d.y)
+    .attr('r', d => d.r)
+    .attr('stroke-width', d => d.width)
+    .on('click', handleClick(data))
 
 export default class GoodCircles extends React.Component {
   componentDidMount() {
-    this.updateD3({
-      width: 1000,
-      height: 1000,
-    })
+    setUpCircles(data)
   }
-  updateD3({ width, height }) {
-    const svg = d3
-      .select('.beep')
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-
-    const radii = getRadii(height, 3)
-
-    const a = {
-      0: {
-        0: 3,
-        1: 2,
-        2: 1,
-      },
-      1: {
-        0: 1,
-        1: 3,
-        2: 2,
-      },
-      2: {
-        0: 2,
-        1: 1,
-        2: 3,
-      },
-    }
-
-    const data = radii.map((x, i) => ({
-      x: half(width),
-      y: half(height),
-      r: x,
-      id: i,
-      width: a[0][i] * 3,
-    }))
-
-    const unit = Math.min(...radii)
-
-    const handleClick = x => {
-      const newData = data.map(y => ({
-        ...y,
-        r: a[x.id][y.id] * unit,
-        width: a[x.id][y.id] * 4,
-      }))
-
-      svg
-        .selectAll('circle')
-        .data(newData)
-        .transition(d3.transition().duration(750))
-        .attr('r', d => d.r)
-        .attr('stroke-width', ({ width }) => width)
-    }
-
-    svg
-      .selectAll('circle')
-      .data(data)
-      .enter()
-      .append('circle')
-      .attr('fill', 'none')
-      .attr('stroke', 'black')
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
-      .attr('r', d => d.r)
-      .attr('stroke-width', d => d.width)
-      .on('click', handleClick)
-  }
-
   render() {
-    return <div className="beep" />
+    return <svg height={height} width={width} />
   }
 }
