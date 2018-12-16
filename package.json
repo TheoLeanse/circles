@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "babel-eslint": "^10.0.1",
     "d3": "^5.7.0",
+    "eslint": "^5.10.0",
+    "eslint-plugin-ramda": "^2.5.1",
     "gatsby": "^1.9.277",
     "gatsby-link": "^1.6.46",
     "gatsby-plugin-netlify-cms": "^2.0.1",
@@ -31,5 +34,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "ramda"
+    ],
+    "extends": "plugin:ramda/recommended",
+    "parser": "babel-eslint"
   }
 }
