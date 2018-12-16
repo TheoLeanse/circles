@@ -1,7 +1,7 @@
 import React from 'react'
 import { path, compose, multiply, prop, map, pluck } from 'ramda'
 import * as d3 from 'd3'
-import { minusTwo, min, half, zeroIndexArrayOfLength, indexMap } from '../utils'
+import { min, half, zeroIndexArrayOfLength, indexMap } from '../utils'
 
 const circumference = (height, n, x) => (height / n) * (n - x)
 
@@ -40,7 +40,7 @@ const data = (width, height, n) =>
       id: i,
       x: half(width),
       y: half(height),
-      r: radius(Math.min(width - 10, height - 10), n, x),
+      r: radius(Math.min(width - 30, height - 30), n, x),
       width: multiply(4, getPosition(0, i)),
     }),
     zeroIndexArrayOfLength(n)
@@ -99,7 +99,7 @@ const getY = radius => angle => radius * Math.sin(angle) + radius
 const transpose = (totalWidth, radius) => x => x + totalWidth / 2 - radius
 
 const notch = (numNodes, radius, totalWidth = 1000) => i => ({
-  id: i,
+  id: i + 'Notch',
   x: compose(
     transpose(totalWidth, radius),
     getX(radius),
@@ -140,8 +140,8 @@ const removeInfoBox = svg => () => {
 
 const setUpNotches = svg => {
   svg
-    .selectAll('circle')
-    .data(notches(7, 505))
+    .selectAll('circle.notch')
+    .data(notches(15, 495))
     .enter()
     .append('svg:circle')
     .attr('class', 'notch')
