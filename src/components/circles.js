@@ -1,7 +1,7 @@
 import React from 'react'
 import { path, compose, multiply, prop, map, pluck } from 'ramda'
 import * as d3 from 'd3'
-import { min, half, zeroIndexArrayOfLength, indexMap } from '../utils'
+import { min, half, indexMap } from '../utils'
 
 const circumference = (height, n, x) => (height / n) * (n - x)
 
@@ -34,16 +34,17 @@ const unit = compose(
   pluck('r')
 )
 
-const data = (width, height, n) =>
+const data = (width, height, timelines) =>
   indexMap(
     (x, i) => ({
+      timeline: x,
       id: i,
       x: half(width),
       y: half(height),
-      r: radius(Math.min(width - 30, height - 30), n, x),
+      r: radius(Math.min(width - 30, height - 30), timelines.length, i),
       width: multiply(4, getPosition(0, i)),
     }),
-    zeroIndexArrayOfLength(n)
+    timelines
   )
 
 const newData = data => id =>
@@ -101,7 +102,8 @@ const getY = radius => angle => radius * Math.sin(angle) + radius
 
 const transpose = (totalWidth, radius) => x => x + totalWidth / 2 - radius
 
-const notch = (numNodes, radius, totalWidth = 1000) => i => ({
+const notch = (numNodes, radius, totalWidth = 1000) => (x, i) => ({
+  ...x,
   id: i + 'Notch',
   x: compose(
     transpose(totalWidth, radius),
@@ -115,13 +117,13 @@ const notch = (numNodes, radius, totalWidth = 1000) => i => ({
   )(i, numNodes),
 })
 
-const notches = (numberOfNotches, radius) =>
-  map(notch(numberOfNotches, radius), zeroIndexArrayOfLength(numberOfNotches))
+const notches = (radius, timeline) =>
+  indexMap(notch(timeline.length, radius), timeline)
 
 const getBoxX = (x, boxWidth, totalWidth = 1000) =>
   x < totalWidth / 2 ? x + 15 : x - 15 - boxWidth
 
-const addInfoBox = svg => ({ x, y, boxWidth = 150 }) => {
+const addInfoBox = svg => ({ x, y, html, boxWidth = 150 }) => {
   svg
     .append('rect')
     .attr('x', getBoxX(x, boxWidth))
@@ -134,7 +136,7 @@ const addInfoBox = svg => ({ x, y, boxWidth = 150 }) => {
     .append('text')
     .attr('x', getBoxX(x, boxWidth) + 3)
     .attr('y', getBoxX(y, boxWidth) + 15)
-    .text('AK')
+    .text(html)
 }
 
 const removeInfoBox = svg => () => {
@@ -142,10 +144,10 @@ const removeInfoBox = svg => () => {
   svg.selectAll('text').remove()
 }
 
-const setUpNotches = svg => {
+const setUpNotches = (svg, timeline) => {
   svg
     .selectAll('circle.notch')
-    .data(notches(15, 495))
+    .data(notches(495, timeline))
     .enter()
     .append('svg:circle')
     .attr('class', 'notch')
@@ -168,10 +170,10 @@ export default class GoodCircles extends React.Component {
     this.circleCount = 3
   }
   componentDidMount() {
-    const initialState = data(this.width, this.height, this.circleCount)
+    const initialState = data(this.width, this.height, this.props.timelines)
     const svg = d3.select('svg')
     setUpCircles(svg, initialState)
-    setUpNotches(svg)
+    setUpNotches(svg, this.props.timelines[0])
   }
   render() {
     return <svg height={this.height} width={this.width} />

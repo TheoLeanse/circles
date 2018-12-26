@@ -1,7 +1,15 @@
 import React from 'react'
 import GoodCircles from '../components/circles'
+import { groupBy, pluck, path, compose } from 'ramda'
 
-const IndexPage = ({ data }) => console.log(data) || <GoodCircles />
+const timelines = compose(
+  Object.values,
+  groupBy(path(['frontmatter', 'timeline'])),
+  pluck('node'),
+  path(['allMarkdownRemark', 'edges'])
+)
+
+const IndexPage = ({ data }) => <GoodCircles timelines={timelines(data)} />
 
 export default IndexPage
 export const query = graphql`
@@ -9,6 +17,18 @@ export const query = graphql`
     site {
       siteMetadata {
         title
+      }
+    }
+    allMarkdownRemark {
+      edges {
+        node {
+          html
+          frontmatter {
+            title
+            timeline
+            image
+          }
+        }
       }
     }
   }

@@ -6,17 +6,12 @@ module.exports = {
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-netlify-cms',
     {
-      resolve: 'gatsby-transformer-remark',
-      options: {
-        plugins: [],
-      },
-    },
-    {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/path/to/markdown/files`,
-        name: 'markdown-pages',
+        path: `${__dirname}/src/pages/media`,
+        name: 'media',
       },
     },
+    'gatsby-transformer-remark',
   ],
 }
