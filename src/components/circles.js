@@ -128,6 +128,11 @@ const notches = (radius, timeline) =>
 const getBoxX = (x, boxWidth, totalWidth = 1000) =>
   x < totalWidth / 2 ? x + 15 : x - 15 - boxWidth
 
+const htmlToText = html => {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  return doc.body.textContent || ''
+}
+
 const addInfoBox = svg => ({ x, y, html, boxWidth = 150 }) => {
   svg
     .append('rect')
@@ -141,7 +146,7 @@ const addInfoBox = svg => ({ x, y, html, boxWidth = 150 }) => {
     .append('text')
     .attr('x', getBoxX(x, boxWidth) + 3)
     .attr('y', getBoxX(y, boxWidth) + 15)
-    .text(html)
+    .text(htmlToText(html))
 }
 
 const removeInfoBox = svg => () => {
