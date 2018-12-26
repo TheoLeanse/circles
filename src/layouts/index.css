@@ -1,3 +1,8 @@
 * {
   box-sizing: border-box;
 }
+
+.beep {
+  border: 1px solid black;
+  background: white;
+}

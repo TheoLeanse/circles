@@ -111,7 +111,7 @@ const transpose = (totalWidth, radius) => x => x + totalWidth / 2 - radius
 
 const notch = (numNodes, radius, totalWidth = 1000) => (x, i) => ({
   ...x,
-  id: i + 'Notch',
+  id: i + '-notch',
   x: compose(
     transpose(totalWidth, radius),
     getX(radius),
@@ -127,24 +127,15 @@ const notch = (numNodes, radius, totalWidth = 1000) => (x, i) => ({
 const notches = (radius, timeline) =>
   indexMap(notch(timeline.length, radius), timeline)
 
-const getBoxX = (x, boxWidth, totalWidth = 1000) =>
+const getBoxX = (x, boxWidth = 150, totalWidth = 1000) =>
   x < totalWidth / 2 ? x + 15 : x - 15 - boxWidth
 
 const addInfoBox = svg => data => {
-  const boxWidth = data.boxWidth || 150
-  const { x, y } = data
-  svg
-    .append('rect')
-    .attr('x', getBoxX(x, boxWidth))
-    .attr('y', getBoxX(y, boxWidth))
-    .attr('width', boxWidth)
-    .attr('height', boxWidth)
-    .attr('fill', 'white')
-    .attr('stroke', 'black')
+  const { x, y, boxWidth = 150 } = data
   svg
     .append('foreignObject')
-    .attr('x', getBoxX(x, boxWidth) + 3)
-    .attr('y', getBoxX(y, boxWidth) + 15)
+    .attr('x', getBoxX(x) + 3)
+    .attr('y', getBoxX(y) + 15)
     .attr('width', boxWidth)
     .attr('height', boxWidth)
     .append('xhtml:div')
@@ -175,11 +166,10 @@ const setUpNotches = (svg, timeline) => {
 const removeNotches = svg => svg.selectAll('circle.notch').remove()
 
 export default class GoodCircles extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.height = 1000
     this.width = 1000
-    this.circleCount = 3
   }
   componentDidMount() {
     const initialState = data(this.width, this.height, this.props.timelines)

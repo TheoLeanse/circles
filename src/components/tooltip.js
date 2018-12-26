@@ -7,10 +7,27 @@ const stripHtml = compose(
   pathOr('', ['body', 'textContent']),
   domParser
 )
-const Media = ({ image, embed }) => (image ? <img src={image} /> : embed)
+
+const clean = code => /\/?(.*)$/.exec(code)
+
+const Embed = ({ code }) => (
+  <iframe
+    src={`https://player.vimeo.com/video/${clean(code)}`}
+    width="640"
+    height="400"
+    frameBorder="0"
+    allowfullscreen
+  />
+)
+
+const Media = ({ image, embed }) => {
+  if (image) return <img src={image} />
+  if (embed) return <Embed code={embed} />
+  return null
+}
 
 const Tooltip = ({ html, frontmatter }) => (
-  <div>
+  <div className={'beep'}>
     <h1>{stripHtml(html)}</h1>
     <Media {...frontmatter} />
   </div>
