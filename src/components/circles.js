@@ -51,7 +51,7 @@ const newData = data => id =>
     x => ({
       ...x,
       r: multiply(unit(data), getPosition(id, x.id)),
-      width: getPosition(id, x.id) * 4,
+      width: multiply(4, getPosition(id, x.id)),
     }),
     data
   )
@@ -94,8 +94,11 @@ const setUpCircles = (svg, data) =>
     })
 
 const getAngle = (i, numNodes) => (i / (numNodes / 2)) * Math.PI
+
 const getX = radius => angle => radius * Math.cos(angle) + radius
+
 const getY = radius => angle => radius * Math.sin(angle) + radius
+
 const transpose = (totalWidth, radius) => x => x + totalWidth / 2 - radius
 
 const notch = (numNodes, radius, totalWidth = 1000) => i => ({
@@ -133,9 +136,10 @@ const addInfoBox = svg => ({ x, y, boxWidth = 150 }) => {
     .attr('y', getBoxX(y, boxWidth) + 15)
     .text('AK')
 }
+
 const removeInfoBox = svg => () => {
-  svg.select('rect').remove()
-  svg.select('text').remove()
+  svg.selectAll('rect').remove()
+  svg.selectAll('text').remove()
 }
 
 const setUpNotches = svg => {
