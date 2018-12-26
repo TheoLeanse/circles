@@ -40,7 +40,6 @@ collections:
       - { label: Body, name: body, widget: markdown }
       - { label: Timeline, name: timeline, widget: string }
       - { label: Image, name: image, widget: image, required: false }
-      - { label: Video, name: video, widget: image, required: false }
-      - { label: Audio, name: audio, widget: image, required: false }
+      - { label: Embed, name: embed, widget: string }
 
 

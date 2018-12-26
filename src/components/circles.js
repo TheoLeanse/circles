@@ -1,7 +1,9 @@
 import React from 'react'
+import ReactDOMServer from 'react-dom/server'
 import { path, compose, multiply, prop, map, pluck, sort, head } from 'ramda'
 import * as d3 from 'd3'
 import { min, half, indexMap } from '../utils'
+import Tooltip from './tooltip'
 
 const circumference = (height, n, x) => (height / n) * (n - x)
 
@@ -128,12 +130,9 @@ const notches = (radius, timeline) =>
 const getBoxX = (x, boxWidth, totalWidth = 1000) =>
   x < totalWidth / 2 ? x + 15 : x - 15 - boxWidth
 
-const htmlToText = html => {
-  const doc = new DOMParser().parseFromString(html, 'text/html')
-  return doc.body.textContent || ''
-}
-
-const addInfoBox = svg => ({ x, y, html, boxWidth = 150 }) => {
+const addInfoBox = svg => data => {
+  const boxWidth = data.boxWidth || 150
+  const { x, y } = data
   svg
     .append('rect')
     .attr('x', getBoxX(x, boxWidth))
@@ -143,15 +142,18 @@ const addInfoBox = svg => ({ x, y, html, boxWidth = 150 }) => {
     .attr('fill', 'white')
     .attr('stroke', 'black')
   svg
-    .append('text')
+    .append('foreignObject')
     .attr('x', getBoxX(x, boxWidth) + 3)
     .attr('y', getBoxX(y, boxWidth) + 15)
-    .text(htmlToText(html))
+    .attr('width', boxWidth)
+    .attr('height', boxWidth)
+    .append('xhtml:div')
+    .html(ReactDOMServer.renderToStaticMarkup(<Tooltip {...data} />))
 }
 
 const removeInfoBox = svg => () => {
   svg.selectAll('rect').remove()
-  svg.selectAll('text').remove()
+  svg.selectAll('foreignObject').remove()
 }
 
 const setUpNotches = (svg, timeline) => {
