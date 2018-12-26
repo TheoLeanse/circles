@@ -1,5 +1,5 @@
 import React from 'react'
-import { path, compose, multiply, prop, map, pluck } from 'ramda'
+import { path, compose, multiply, prop, map, pluck, sort, head } from 'ramda'
 import * as d3 from 'd3'
 import { min, half, indexMap } from '../utils'
 
@@ -57,6 +57,11 @@ const newData = data => id =>
     data
   )
 
+const primaryTimeline = compose(
+  prop('timeline'),
+  head,
+  sort((a, b) => a.r - b.r)
+)
 const updater = svg => data =>
   svg
     .selectAll('circle')
@@ -65,7 +70,7 @@ const updater = svg => data =>
       d3
         .transition()
         .duration(750)
-        .on('end', () => setUpNotches(svg))
+        .on('end', () => setUpNotches(svg, primaryTimeline(data)))
     )
     .attr('r', prop('r'))
     .attr('stroke-width', prop('width'))
