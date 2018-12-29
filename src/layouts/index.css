@@ -6,3 +6,7 @@
   border: 1px solid black;
   background: white;
 }
+
+img {
+  max-width: 100%;
+}

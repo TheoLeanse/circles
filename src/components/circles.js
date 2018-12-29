@@ -5,6 +5,9 @@ import * as d3 from 'd3'
 import { min, half, indexMap } from '../utils'
 import Tooltip from './tooltip'
 
+export const BOX_WIDTH = 400
+export const BOX_HEIGHT = 300
+
 const circumference = (height, n, x) => (height / n) * (n - x)
 
 const radius = compose(
@@ -127,17 +130,16 @@ const notch = (numNodes, radius, totalWidth = 1000) => (x, i) => ({
 const notches = (radius, timeline) =>
   indexMap(notch(timeline.length, radius), timeline)
 
-const getBoxX = (x, boxWidth = 150, totalWidth = 1000) =>
+const getBoxX = (x, boxWidth, totalWidth = 1000) =>
   x < totalWidth / 2 ? x + 15 : x - 15 - boxWidth
 
 const addInfoBox = svg => data => {
-  const { x, y, boxWidth = 150 } = data
   svg
     .append('foreignObject')
-    .attr('x', getBoxX(x) + 3)
-    .attr('y', getBoxX(y) + 15)
-    .attr('width', boxWidth)
-    .attr('height', boxWidth)
+    .attr('x', getBoxX(data.x, BOX_WIDTH) + 3)
+    .attr('y', getBoxX(data.y, BOX_HEIGHT) + 15)
+    .attr('width', BOX_WIDTH)
+    .attr('height', BOX_HEIGHT)
     .append('xhtml:div')
     .html(ReactDOMServer.renderToStaticMarkup(<Tooltip {...data} />))
 }
