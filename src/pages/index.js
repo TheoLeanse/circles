@@ -28,6 +28,7 @@ export const query = graphql`
             timeline
             embed
             timestamp
+            image
           }
         }
       }
