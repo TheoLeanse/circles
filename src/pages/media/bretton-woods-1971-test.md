@@ -1,7 +1,7 @@
 ---
 templateKey: media
 title: Bretton Woods 1971 test
-timeline: '3'
+timeline: '2'
 image: /img/1.jpg
 timestamp: '2018-12-31'
 ---
