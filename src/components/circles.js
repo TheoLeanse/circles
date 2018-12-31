@@ -134,6 +134,7 @@ const getBoxX = (x, boxWidth, totalWidth = 1000) =>
   x < totalWidth / 2 ? x + 15 : x - 15 - boxWidth
 
 const addInfoBox = svg => data => {
+  removeInfoBox(svg)()
   svg
     .append('foreignObject')
     .attr('x', getBoxX(data.x, BOX_WIDTH) + 3)
@@ -142,6 +143,9 @@ const addInfoBox = svg => data => {
     .attr('height', BOX_HEIGHT)
     .append('xhtml:div')
     .html(ReactDOMServer.renderToStaticMarkup(<Tooltip {...data} />))
+  document
+    .querySelector('.js-close-tooltip')
+    .addEventListener('click', removeInfoBox(svg))
 }
 
 const removeInfoBox = svg => () => {
@@ -160,8 +164,6 @@ const setUpNotches = (svg, timeline) => {
     .attr('cx', prop('x'))
     .attr('cy', prop('y'))
     .attr('id', prop('id'))
-    .on('mouseover', addInfoBox(svg))
-    .on('mouseleave', removeInfoBox(svg))
     .on('click', addInfoBox(svg))
 }
 

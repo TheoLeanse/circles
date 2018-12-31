@@ -42,6 +42,7 @@ const Tooltip = ({ html, frontmatter }) => (
   <div className={'beep'}>
     <Content content={html} />
     <Media {...frontmatter} />
+    <button className={'js-close-tooltip'}>Close</button>
   </div>
 )
 
