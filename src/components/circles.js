@@ -110,6 +110,7 @@ const setUpCircles = (svg, data) =>
     .attr('r', prop('r'))
     .attr('stroke-width', prop('width'))
     .on('click', x => {
+      removeInfoBox(svg)()
       handleClick(svg, data)(x)
       removeNotches(svg)
     })
