@@ -166,6 +166,7 @@ const removeInfoBox = svg => () => {
 const chronologicalOrder = sortBy(path(['frontmatter', 'timestamp']))
 
 const setUpNotches = (svg, timeline) => {
+  console.log('Debug:', timeline, chronologicalOrder(timeline))
   svg
     .selectAll('circle.notch')
     .data(notches(495, chronologicalOrder(timeline)))
