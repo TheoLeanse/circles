@@ -26,7 +26,6 @@ export const query = graphql`
           frontmatter {
             title
             timeline
-            image
             embed
           }
         }
