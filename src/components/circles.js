@@ -169,6 +169,11 @@ const setUpNotches = (svg, timeline) => {
 
 const removeNotches = svg => svg.selectAll('circle.notch').remove()
 
+const ensureThreeTimelines = timelines =>
+  timelines.length >= 3
+    ? timelines.slice(0, 3)
+    : ensureThreeTimelines(timelines.concat({}))
+
 export default class GoodCircles extends React.Component {
   constructor(props) {
     super(props)
@@ -176,7 +181,11 @@ export default class GoodCircles extends React.Component {
     this.width = 1000
   }
   componentDidMount() {
-    const initialState = data(this.width, this.height, this.props.timelines)
+    const initialState = data(
+      this.width,
+      this.height,
+      ensureThreeTimelines(this.props.timelines)
+    )
     const svg = d3.select('svg')
     setUpCircles(svg, initialState)
     setUpNotches(svg, this.props.timelines[0])
