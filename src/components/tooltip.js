@@ -9,12 +9,14 @@ const stripHtml = compose(
   parseHtml
 )
 
-const url = x => new URL(x)
-
-const clean = compose(
-  prop('pathname'),
-  url
-)
+const clean = x => {
+  try {
+    const { pathname } = new URL(x)
+    return pathname
+  } catch (e) {
+    return '/' + x
+  }
+}
 
 const Embed = ({ code }) => {
   const srcURL = `https://player.vimeo.com/video${clean(code)}`
