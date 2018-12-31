@@ -1,6 +1,16 @@
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { path, compose, multiply, prop, map, pluck, sort, head } from 'ramda'
+import {
+  path,
+  compose,
+  multiply,
+  prop,
+  map,
+  pluck,
+  sort,
+  head,
+  sortBy,
+} from 'ramda'
 import * as d3 from 'd3'
 import { min, half, indexMap } from '../utils'
 import Tooltip from './tooltip'
@@ -152,11 +162,12 @@ const removeInfoBox = svg => () => {
   svg.selectAll('rect').remove()
   svg.selectAll('foreignObject').remove()
 }
+const chronologicalOrder = sortBy(path(['frontmatter', 'timestamp']))
 
 const setUpNotches = (svg, timeline) => {
   svg
     .selectAll('circle.notch')
-    .data(notches(495, timeline))
+    .data(notches(495, chronologicalOrder(timeline)))
     .enter()
     .append('svg:circle')
     .attr('class', 'notch')
